@@ -43,6 +43,7 @@ export default function WeddingPage() {
 
   // Control de hidratación del servidor
   const [mounted, setMounted] = useState(false);
+  const [showOverlay, setShowOverlay] = useState(true);
 
   // Estado del contador regresivo
   const [timeLeft, setTimeLeft] = useState({
@@ -61,27 +62,21 @@ export default function WeddingPage() {
   // EFECTOS Y FUNCIONES
   // ============================================
 
-  // Función para intentar reproducir el audio
-  const attemptPlayAudio = () => {
+  // Función para iniciar la música
+  const startMusic = () => {
     const audio = document.getElementById('wedding-audio') as HTMLAudioElement | null;
-    if (audio && !isPlaying) {
+    if (audio) {
       audio.volume = 0.15;
-      // Asegurarse de que el audio esté cargado
-      if (audio.readyState >= 2) {
-        const playPromise = audio.play();
-        if (playPromise !== undefined) {
-          playPromise
-            .then(() => {
-              setIsPlaying(true);
-              // Remover los listeners una vez que la música comienza a reproducirse
-              document.removeEventListener('scroll', handleScroll);
-              document.removeEventListener('touchstart', handleTouch);
-              document.removeEventListener('click', handleClick);
-            })
-            .catch(() => {
-              setIsPlaying(false);
-            });
-        }
+      const playPromise = audio.play();
+      if (playPromise !== undefined) {
+        playPromise
+          .then(() => {
+            setIsPlaying(true);
+            setShowOverlay(false);
+          })
+          .catch(() => {
+            setIsPlaying(false);
+          });
       }
     }
   };
@@ -89,30 +84,22 @@ export default function WeddingPage() {
   // Handlers para eventos de interacción
   const handleScroll = (event: Event) => {
     console.log('Scroll event detected');
-    attemptPlayAudio();
+    startMusic();
   };
 
   const handleTouch = (event: TouchEvent) => {
     console.log('Touch event detected');
-    attemptPlayAudio();
+    startMusic();
   };
 
   const handleClick = (event: MouseEvent) => {
     console.log('Click event detected');
-    attemptPlayAudio();
+    startMusic();
   };
 
   // Efecto para inicializar el componente y el contador
   useEffect(() => {
     setMounted(true);
-
-    // Intentar reproducir el audio inicialmente
-    attemptPlayAudio();
-
-    // Agregar listeners para múltiples eventos
-    document.addEventListener('scroll', handleScroll, { passive: true });
-    document.addEventListener('touchstart', handleTouch, { passive: true });
-    document.addEventListener('click', handleClick, { passive: true });
 
     // Función para calcular el tiempo restante
     const calculateTimeLeft = () => {
@@ -209,6 +196,22 @@ export default function WeddingPage() {
         loop
         style={{ display: 'none' }}
       />
+
+      {/* Overlay inicial para móvil */}
+      {showOverlay && (
+        <div className="fixed inset-0 z-50 bg-wedding-green/95 flex items-center justify-center p-4">
+          <div className="text-center text-white max-w-sm">
+            <h2 className="font-script text-3xl mb-4">Bienvenidos a Nuestra Boda</h2>
+            <p className="mb-6">Toca la pantalla para comenzar la experiencia con música</p>
+            <button
+              onClick={startMusic}
+              className="bg-wedding-gold hover:bg-wedding-gold/90 text-white font-medium py-3 px-6 rounded-full transition-all duration-300 hover:scale-105"
+            >
+              Comenzar
+            </button>
+          </div>
+        </div>
+      )}
 
       {/* Reproductor de audio elegante */}
       <div
