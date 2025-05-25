@@ -61,28 +61,58 @@ export default function WeddingPage() {
   // EFECTOS Y FUNCIONES
   // ============================================
 
+  // Función para intentar reproducir el audio
+  const attemptPlayAudio = () => {
+    const audio = document.getElementById('wedding-audio') as HTMLAudioElement | null;
+    if (audio && !isPlaying) {
+      audio.volume = 0.15;
+      // Asegurarse de que el audio esté cargado
+      if (audio.readyState >= 2) {
+        const playPromise = audio.play();
+        if (playPromise !== undefined) {
+          playPromise
+            .then(() => {
+              setIsPlaying(true);
+              // Remover los listeners una vez que la música comienza a reproducirse
+              document.removeEventListener('scroll', handleScroll);
+              document.removeEventListener('touchstart', handleTouch);
+              document.removeEventListener('click', handleClick);
+            })
+            .catch(() => {
+              setIsPlaying(false);
+            });
+        }
+      }
+    }
+  };
+
+  // Handlers para eventos de interacción
+  const handleScroll = (event: Event) => {
+    console.log('Scroll event detected');
+    attemptPlayAudio();
+  };
+
+  const handleTouch = (event: TouchEvent) => {
+    console.log('Touch event detected');
+    attemptPlayAudio();
+  };
+
+  const handleClick = (event: MouseEvent) => {
+    console.log('Click event detected');
+    attemptPlayAudio();
+  };
+
   // Efecto para inicializar el componente y el contador
   useEffect(() => {
     setMounted(true);
 
-    const audio = document.getElementById('wedding-audio') as HTMLAudioElement | null;
-    if (audio) {
-      audio.volume = 0.15;
-      // Intentar reproducir automáticamente
-      const playPromise = audio.play();
-      
-      if (playPromise !== undefined) {
-        playPromise
-          .then(() => {
-            // Autoplay iniciado exitosamente
-            setIsPlaying(true);
-          })
-          .catch(() => {
-            // Autoplay fue bloqueado
-            setIsPlaying(false);
-          });
-      }
-    }
+    // Intentar reproducir el audio inicialmente
+    attemptPlayAudio();
+
+    // Agregar listeners para múltiples eventos
+    document.addEventListener('scroll', handleScroll, { passive: true });
+    document.addEventListener('touchstart', handleTouch, { passive: true });
+    document.addEventListener('click', handleClick, { passive: true });
 
     // Función para calcular el tiempo restante
     const calculateTimeLeft = () => {
@@ -108,8 +138,13 @@ export default function WeddingPage() {
       setTimeLeft(calculateTimeLeft());
     }, 1000);
 
-    // Limpiar timer al desmontar componente
-    return () => clearInterval(timer);
+    // Limpiar timer y event listeners al desmontar componente
+    return () => {
+      clearInterval(timer);
+      document.removeEventListener('scroll', handleScroll);
+      document.removeEventListener('touchstart', handleTouch);
+      document.removeEventListener('click', handleClick);
+    };
   }, [isPlaying]);
 
   // ============================================
