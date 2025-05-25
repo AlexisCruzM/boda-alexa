@@ -18,7 +18,7 @@ export const EventInfoSection: React.FC = () => {
   };
 
   const openReceptionMap = () => {
-    window.open('https://maps.google.com/?q=HOTEL+LLANO+CAMPESTRE+Vía+Villavicencio+-+Acacías+km+10+Villavicencio+Meta', '_blank');
+    window.open('https://www.google.com/maps/dir/?api=1&origin=Parroquia+Santa+Laura+Montoya+4CFP%2BHH+Villavicencio+Meta&destination=HOTEL+LLANO+CAMPESTRE+Vía+Villavicencio+-+Acacías+km+10+Villavicencio+Meta', '_blank');
   };
 
   return (

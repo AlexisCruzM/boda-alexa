@@ -68,8 +68,20 @@ export default function WeddingPage() {
     const audio = document.getElementById('wedding-audio') as HTMLAudioElement | null;
     if (audio) {
       audio.volume = 0.15;
-      // Si el usuario ya interactuó, reproducir
-      if (isPlaying) audio.play();
+      // Intentar reproducir automáticamente
+      const playPromise = audio.play();
+      
+      if (playPromise !== undefined) {
+        playPromise
+          .then(() => {
+            // Autoplay iniciado exitosamente
+            setIsPlaying(true);
+          })
+          .catch(() => {
+            // Autoplay fue bloqueado
+            setIsPlaying(false);
+          });
+      }
     }
 
     // Función para calcular el tiempo restante
