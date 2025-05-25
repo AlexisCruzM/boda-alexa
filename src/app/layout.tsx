@@ -18,7 +18,7 @@ const dancing = Dancing_Script({
 });
 
 export const metadata: Metadata = {
-  title: "Nuestra Boda - [Nombres de los Novios]",
+  title: "Nuestra Boda - Alexandra y Fabian",
   description: "Te invitamos a celebrar nuestro día especial. Confirma tu asistencia y obtén toda la información sobre nuestra boda.",
   keywords: ["boda", "invitación", "matrimonio", "celebración"],
   authors: [{ name: "Página de Boda Elegante" }],
