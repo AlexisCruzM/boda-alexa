@@ -169,13 +169,18 @@ export default function WeddingPage() {
       title: 'Boda de Alexandra & Fabian',
       start: weddingDate.toISOString().replace(/[-:]/g, '').split('.')[0] + 'Z',
       end: new Date(weddingDate.getTime() + 6 * 60 * 60 * 1000).toISOString().replace(/[-:]/g, '').split('.')[0] + 'Z',
-      description: 'Ceremonia en Iglesia San José a las 3:00 PM, seguida de recepción en Finca Los Rosales a las 6:00 PM',
-      location: 'Iglesia San José, Calle Principal 123'
+      description: 'Ceremonia en Parroquia Santa Laura Montoya a las 3:00 PM, seguida de recepción en Hotel Llano Campestre a las 6:00 PM',
+      location: 'Parroquia Santa Laura Montoya 4CFP+HH, Villavicencio, Meta'
     };
 
-    const googleCalendarUrl = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(event.title)}&dates=${event.start}/${event.end}&details=${encodeURIComponent(event.description)}&location=${encodeURIComponent(event.location)}`;
+    // URL base para Google Calendar con parámetros para recordatorio (1440 minutos = 1 día antes)
+    const googleCalendarUrl = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(event.title)}&dates=${event.start}/${event.end}&details=${encodeURIComponent(event.description)}&location=${encodeURIComponent(event.location)}&sf=true&output=xml`;
 
-    window.open(googleCalendarUrl, '_blank');
+    // A more standard way to add reminders might require more direct API interaction or a different URL structure. Let's try adding a basic reminder parameter.
+    const reminderUrl = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(event.title)}&dates=${event.start}/${event.end}&details=${encodeURIComponent(event.description)}&location=${encodeURIComponent(event.location)}&reminders=1440`;
+
+    // Using the URL with the reminder parameter
+    window.open(reminderUrl, '_blank');
   };
 
   // ============================================
